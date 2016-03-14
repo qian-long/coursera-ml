@@ -15,7 +15,15 @@ p = zeros(m, 1);
 %               You should set p to a vector of 0's and 1's
 %
 
-
+thresh = 0.5;
+for i = 1:m
+  % ith row of x, then transposed to multiply with theta
+  if (sigmoid(theta' * X(i,:)') >=  thresh)
+    p(i) = 1
+  else
+    p(i) = 0
+  endif
+end
 
 
 
