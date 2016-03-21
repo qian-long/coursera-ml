@@ -5,6 +5,7 @@ function p = predict(Theta1, Theta2, X)
 
 % Useful values
 m = size(X, 1);
+n = size(X, 2);
 num_labels = size(Theta2, 1);
 
 % You need to return the following variables correctly 
@@ -21,6 +22,21 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+% Add ones to the X data matrix to account for the +1 bias node
+% Input layer
+a1 = [ones(m, 1) X];
+% Compute 2nd layer
+a2 = sigmoid(a1 * Theta1')
+
+% Add a column of ones to the 2nd layer matrix
+a2 = [ones(size(a2, 1), 1) a2]
+
+% Compute output layer
+a3 = sigmoid(a2 * Theta2')
+
+% Find argmax to get the output label
+[max_vals, args] = max(a3, [], 2)
+p = args;
 
 
 
