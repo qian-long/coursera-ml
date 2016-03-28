@@ -63,16 +63,63 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 
+% 1) Cost Function
+a1 = [ones(m, 1) X];
+a2 = sigmoid(a1 * Theta1');
+a2 = [ones(size(a2, 1), 1) a2];
+h = sigmoid(a2 * Theta2');
+
+% Convert y into vector of 0s and 1s
+% TODO: find prettier command for this conversion
+Y = zeros(m, num_labels);
+for i = 1:m
+  Y(i, y(i)) = 1;
+end
+J = (-1/m) * sum((Y.*log(h) + (1-Y).*log(1-h))(:)); % w/o regularization
+
+% minus bias (1st column)
+Theta1_minus_bias = Theta1;
+Theta1_minus_bias(:, [1]) = [];
+Theta1Sq = Theta1_minus_bias.^2;
+% minus bias (1st column)
+Theta2_minus_bias = Theta2;
+Theta2_minus_bias(:, [1]) = [];
+Theta2Sq = Theta2_minus_bias.^2;
+reg = lambda/(2*m) * (sum(Theta1Sq(:)) + sum(Theta2Sq(:)));
+
+% Add regularization term to cost function
+J = J + reg;
 
 
+% 2) Back propagation
+accum1 = zeros(size(Theta1));
+accum2 = zeros(size(Theta2));
+for i = 1:m
+  % forward feed
+  a1 = X(i, :); % ith row of X
+  a1 = [ones(size(a1,1),1) a1]; % add bias term
+  z2 = a1 * Theta1';
+  a2 = sigmoid(z2);
+  a2 = [ones(1,1) a2];
+  z3 = a2 * Theta2';
+  h = sigmoid(z3);
+  delta3 = h - Y(i, :);
+  delta2 = (delta3 * Theta2_minus_bias).*sigmoidGradient(z2);
+  % remove delta2_0
+  accum1 = accum1 + delta2' * a1;
+  accum2 = accum2 + delta3' * a2;
+end
+Theta1_grad = (1/m) * accum1;
+Theta1_grad_rest = Theta1_grad; % minus bias
+Theta1_grad_rest(:, [1]) = [];
+Theta1_grad_rest = Theta1_grad_rest + (lambda/m) * Theta1_minus_bias;
+Theta1_grad = [Theta1_grad(:,1) Theta1_grad_rest];
 
-
-
-
-
-
-
-
+Theta2_grad = (1/m) * accum2;
+Theta2_grad_rest = Theta2_grad; % minus bias
+Theta2_grad_rest(:, [1]) = [];
+Theta2_grad_rest = Theta2_grad_rest + (lambda/m) * Theta2_minus_bias;
+Theta2_grad = [Theta2_grad(:,1) Theta2_grad_rest];
 
 
 
