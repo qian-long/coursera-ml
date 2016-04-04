@@ -22,7 +22,16 @@ grad = zeros(size(theta));
 
 
 
+h = X*theta;
+theta_rest = theta;
+theta_rest(1,:) = []; % minus bias, remove first row
 
+J = 1/(2*m).*(h - y)' * (h - y) + lambda/(2*m).*theta_rest'*theta_rest;
+
+theta_rest = theta; % reset var to input theta
+theta_rest(1) = 0;
+reg = (lambda/m)*theta_rest;
+grad = (1/m).*X'*(h-y) + reg;
 
 
 
