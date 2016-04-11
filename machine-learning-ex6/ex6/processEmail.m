@@ -98,7 +98,13 @@ while ~isempty(email_contents)
     %
 
 
-
+    % TODO: use hashmap
+    for i=1:length(vocabList)
+      vocab = vocabList{i};
+      if (strcmp(str, vocab) == 1)
+        word_indices = [word_indices; i];
+      endif
+    end
 
 
 
