@@ -22,7 +22,11 @@ sigma2 = zeros(n, 1);
 %
 
 
-
+for i = 1:n
+  row = X(:, i);
+  mu(i) = 1/m * sum(row);
+  sigma2(i) = 1/m * (row - mu(i))' * (row - mu(i));
+end
 
 
 

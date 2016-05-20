@@ -11,7 +11,6 @@ X = reshape(params(1:num_movies*num_features), num_movies, num_features);
 Theta = reshape(params(num_movies*num_features+1:end), ...
                 num_users, num_features);
 
-            
 % You need to return the following values correctly
 J = 0;
 X_grad = zeros(size(X));
@@ -41,13 +40,16 @@ Theta_grad = zeros(size(Theta));
 %
 
 
+% Multiply by R to filter the ones where the user actually rated the movie.
+J = 1/2 * sum(sum(((X * Theta' .* R) - (Y .* R)).^2));
 
+reg_theta = lambda/2 * sum(sum(Theta .^ 2));
+reg_x = lambda/2 * sum(sum(X .^ 2));
 
+J = J + reg_theta + reg_x;
 
-
-
-
-
+X_grad = (X * Theta' .* R - (Y .* R)) * Theta + lambda * X;
+Theta_grad = (Theta * X' .* R' - (Y .* R)') * X + lambda * Theta;
 
 
 
